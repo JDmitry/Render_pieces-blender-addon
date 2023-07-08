@@ -3,6 +3,14 @@ import os
 import re
 import shutil
 
+bl_info = {
+    "name": "Render frames",
+    "author": "dmitry sysoev",
+    "version": (0, 1),
+    "blender": (2, 8, 0),
+    "category": "Import-Export"
+}
+
 def main(context):
     file_path = bpy.data.filepath
     directory = os.path.dirname(file_path)
