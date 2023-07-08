@@ -7,7 +7,7 @@ bl_info = {
     "name": "Render frames",
     "author": "dmitry sysoev",
     "version": (0, 1),
-    "blender": (2, 8, 0),
+    "blender": (2, 80, 0),
     "category": "Import-Export"
 }
 
@@ -86,7 +86,7 @@ class Script(bpy.types.Panel):
     bl_idname = "script_PT_render2 "
     bl_space_type = "SEQUENCE_EDITOR"
     bl_region_type = "UI"
-    bi_context = "scene"
+    bl_context = "scene"
     
     def draw(self, context):
         layout = self.layout
