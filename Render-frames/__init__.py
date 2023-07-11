@@ -7,7 +7,7 @@ bl_info = {
     "name": "Render frames",
     "author": "dmitry sysoev",
     "version": (0, 1),
-    "blender": (2, 80, 0),
+    "blender": (2, 8, 0),
     "category": "Import-Export"
 }
 
@@ -15,8 +15,13 @@ def main(context):
     file_path = bpy.data.filepath
     directory = os.path.dirname(file_path)
     pattern = "{0:03d}0"
-    dir_name = ""
+    dir_name = "" 
     data = ""
+    
+    sum = 0
+    first_frame = []
+    last_frame = []
+    
     pattern2 = "0 59 <level id='1'/>0001 1"
     start = bpy.context.scene.frame_start
     end = bpy.context.scene.frame_end
@@ -46,15 +51,26 @@ def main(context):
     os.mkdir(inputs)
     scripts = directory + "/" + dir_name + "/scripts"
     os.mkdir(scripts)
-
+    
+    seq = []
+    for i in sequence.sequences_all:
+        if i.select:
+            first_frame.append(i.frame_final_start)
+            last_frame.append(i.frame_final_end)
+           
+    first_frame.sort()
+    last_frame.sort()
+    print(first_frame)
+    print(last_frame)
+    
     shutil.copy2(os.path.join(directory, "template", "main.tnz"), os.path.join(directory, dir_name, "main.tnz"))
     with open(os.path.join(directory, dir_name, "main.tnz"), "r") as f:
         data = f.readlines()
         for i in data:
             if re.search(pattern2, i):
                 index = data.index(i)
-                i = i.replace("59", str(bpy.data.scenes['Scene'].sequence_editor.active_strip.frame_final_duration))
-                i = i.replace("0001", "{0:04d}".format(bpy.data.scenes['Scene'].sequence_editor.active_strip.frame_final_start))
+                i = i.replace("59", str(last_frame[-1] - first_frame[0]))
+                i = i.replace("0001", "{0:04d}".format(first_frame[0]))
                 data[index] = i
                 break
 
@@ -104,4 +120,4 @@ def unregister():
   bpy.utils.unregister_class(ScriptOperator)
  
 if __name__ == "__main__":
-  register()
+  register(
