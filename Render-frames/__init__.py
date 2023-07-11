@@ -2,6 +2,7 @@ import bpy
 import os
 import re
 import shutil
+import subprocess
 
 bl_info = {
     "name": "Render frames",
@@ -88,6 +89,8 @@ def main(context):
     bpy.context.scene.render.image_settings.file_format = format
     bpy.context.scene.frame_start = start
     bpy.context.scene.frame_end = end
+    
+    subprocess.run(r'opentoonz {0}/{1}/main.tnz'.format(directory, dir_name), shell=True, timeout=10)
 
 class ScriptOperator(bpy.types.Operator):
     bl_idname = "object.script_operator"
