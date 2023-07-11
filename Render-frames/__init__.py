@@ -120,4 +120,4 @@ def unregister():
   bpy.utils.unregister_class(ScriptOperator)
  
 if __name__ == "__main__":
-  register(
+  register()
