@@ -3,6 +3,7 @@ import os
 import re
 import shutil
 import subprocess
+import platform
 
 bl_info = {
     "name": "Render frames",
@@ -11,7 +12,7 @@ bl_info = {
     "blender": (2, 8, 0),
     "category": "Import-Export"
 }
-
+ 
 def main(context):
     file_path = bpy.data.filepath
     directory = os.path.dirname(file_path)
@@ -61,8 +62,6 @@ def main(context):
            
     first_frame.sort()
     last_frame.sort()
-    print(first_frame)
-    print(last_frame)
     
     shutil.copy2(os.path.join(directory, "template", "main.tnz"), os.path.join(directory, dir_name, "main.tnz"))
     with open(os.path.join(directory, dir_name, "main.tnz"), "r") as f:
@@ -90,8 +89,13 @@ def main(context):
     bpy.context.scene.frame_start = start
     bpy.context.scene.frame_end = end
     
-    subprocess.run(r'opentoonz {0}/{1}/main.tnz'.format(directory, dir_name), shell=True, timeout=10)
-
+    if platform.system() == "Linux":
+        subprocess.Popen([r'opentoonz', '{0}/{1}/main.tnz'.format(directory, dir_name)])
+    elif platform.system() == "Darwin":
+        subprocess.Popen([r'/Applications/OpenToonz.app/Contents/MacOS/OpenToonz', '{0}/{1}/main.tnz'.format(directory, dir_name)])
+    elif platform.system() == "Windows":
+        subprocess.Popen([r'C:\\Program files\\OpenToonz\\opentoonz.exe', '{0}\\{1}\\main.tnz'.format(directory, dir_name)])
+        
 class ScriptOperator(bpy.types.Operator):
     bl_idname = "object.script_operator"
     bl_label = "Render"
