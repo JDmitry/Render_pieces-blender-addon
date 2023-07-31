@@ -9,40 +9,51 @@ bl_info = {
     "name": "Render frames",
     "author": "dmitry sysoev",
     "version": (0, 1),
-    "blender": (2, 8, 0),
+    "blender": (2, 80, 0),
     "category": "Import-Export"
 }
 
-scene = ""
-working_directory = bpy.path.abspath("//")
-
-start = bpy.context.scene.frame_start
-end = bpy.context.scene.frame_end
-format = bpy.context.scene.render.image_settings.file_format
+def main(context):
+    scene = ""
+    working_directory = bpy.path.abspath("//")
+    data = []
+    first_frame = []
+    last_frame = []
     
-def create_scene_package():
-    global scene
+    start = bpy.context.scene.frame_start
+    end = bpy.context.scene.frame_end
+    format_file = bpy.context.scene.render.image_settings.file_format
+    
+    if not os.path.exists(working_directory + "shots"):
+        os.mkdir(os.path.join(working_directory, "shots"))
+    
     dirs = []   
-    for i in os.listdir(working_directory):
+    for i in os.listdir(working_directory + "shots/"):
         if re.match(r'^[0-9]{3}0$', i):
             dirs.append(i)
     scene = "{0:03d}0".format(len(dirs)+1)
-    os.mkdir(os.path.join(working_directory, scene))
     
-def render_scene():
-    bpy.ops.sequencer.set_range_to_strips()
+    for i in bpy.data.scenes['Scene'].sequence_editor.sequences_all:
+        if i.select:
+            first_frame.append(i.frame_final_start)
+            last_frame.append(i.frame_final_end)
+            
+    first_frame.sort()
+    last_frame.sort()
+    
+    bpy.context.scene.frame_start = first_frame[0]
+    bpy.context.scene.frame_end = last_frame[-1]
+    
     bpy.context.scene.render.image_settings.file_format = 'PNG'
     bpy.context.scene.render.filepath = "//{}/extras/file.".format(scene)
     bpy.ops.render.render(animation=True)
     bpy.ops.sound.mixdown(filepath="//{}/extras/sound.wav".format(scene), container='WAV', codec='PCM')
     
-def create_directories():
     os.mkdir("{0}/{1}/drawings".format(working_directory, scene))
     os.mkdir("{0}/{1}/inputs".format(working_directory, scene))
     os.mkdir("{0}/{1}/scripts".format(working_directory, scene))
     
-def copy_files():
-    shutil.copy2(os.path.join(working_directory, "template", "main.tnz"), os.path.join(working_directory, scene, "main.tnz"))  
+    shutil.copy2(os.path.join(working_directory, "template", "main.tnz"), os.path.join(working_directory, scene, "main.tnz"))
     shutil.copy2(os.path.join(working_directory, "template", "07-1000_otprj.xml"), os.path.join(working_directory, scene, "{}_otprj.xml".format(scene)))
     shutil.copy2(os.path.join(working_directory, "template", "project.conf"), os.path.join(working_directory, scene, "project.conf"))
     shutil.copy2(os.path.join(working_directory, "template", "scenes.xml"), os.path.join(working_directory, scene, "scenes.xml"))
@@ -51,7 +62,6 @@ def copy_files():
     shutil.copy2(os.path.join(working_directory, "template", "inputs", "scenes.xml"), os.path.join(working_directory, scene, "inputs", "scenes.xml"))
     shutil.copy2(os.path.join(working_directory, "template", "scripts", "scenes.xml"), os.path.join(working_directory, scene, "scripts", "scenes.xml"))
     
-def change_main_file():
     data = []
     first_frame = bpy.context.scene.frame_start
     last_frame = bpy.context.scene.frame_end
@@ -68,27 +78,18 @@ def change_main_file():
     with open(os.path.join(working_directory, scene, "main.tnz"), "w") as file:
             new_file = file.writelines(data)
             
-def return_properties():
-     bpy.context.scene.render.image_settings.file_format = format
-     bpy.context.scene.frame_start = start
-     bpy.context.scene.frame_end = end
+    os.rename(os.path.join(working_directory, scene), os.path.join(working_directory, "shots", scene))
             
-def load_scene_into_opentoonz():
+    bpy.context.scene.render.image_settings.file_format = format_file
+    bpy.context.scene.frame_start = 1
+    bpy.context.scene.frame_end = end
+    
     if platform.system() == "Linux":
-        subprocess.Popen([r'opentoonz', '{0}/{1}/main.tnz'.format(working_directory, scene)])
+        subprocess.Popen([r'opentoonz', '{0}shots/{1}/main.tnz'.format(working_directory, scene)])
     elif platform.system() == "Darwin":
-        subprocess.Popen([r'/Applications/OpenToonz.app/Contents/MacOS/OpenToonz', '{0}/{1}/main.tnz'.format(working_directory, scene)])
+        subprocess.Popen([r'/Applications/OpenToonz.app/Contents/MacOS/OpenToonz', '{0}shots/{1}/main.tnz'.format(working_directory, scene)])
     elif platform.system() == "Windows":
-        subprocess.Popen([r'opentoonz.exe', '{0}\\{1}\\main.tnz'.format(working_directory, scene)])
-
-def main(context): 
-    create_scene_package()
-    render_scene()
-    create_directories()
-    copy_files()
-    change_main_file()
-    return_properties()
-    load_scene_into_opentoonz()
+        subprocess.Popen([r'opentoonz.exe', '{0}shots\\{1}\\main.tnz'.format(working_directory, scene)])
 
 class ScriptOperator(bpy.types.Operator):
     bl_idname = "object.script_operator"
