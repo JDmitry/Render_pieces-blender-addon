@@ -45,27 +45,27 @@ def main(context):
     bpy.context.scene.frame_end = last_frame[-1]
     
     bpy.context.scene.render.image_settings.file_format = 'PNG'
-    bpy.context.scene.render.filepath = "//{}/extras/file.".format(scene)
+    bpy.context.scene.render.filepath = "//shots/{}/extras/file.".format(scene)
     bpy.ops.render.render(animation=True)
-    bpy.ops.sound.mixdown(filepath="//{}/extras/sound.wav".format(scene), container='WAV', codec='PCM')
+    bpy.ops.sound.mixdown(filepath="//shots/{}/extras/sound.wav".format(scene), container='WAV', codec='PCM')
     
-    os.mkdir("{0}/{1}/drawings".format(working_directory, scene))
-    os.mkdir("{0}/{1}/inputs".format(working_directory, scene))
-    os.mkdir("{0}/{1}/scripts".format(working_directory, scene))
+    os.mkdir("{0}/shots/{1}/drawings".format(working_directory, scene))
+    os.mkdir("{0}/shots/{1}/inputs".format(working_directory, scene))
+    os.mkdir("{0}/shots/{1}/scripts".format(working_directory, scene))
     
-    shutil.copy2(os.path.join(working_directory, "template", "main.tnz"), os.path.join(working_directory, scene, "main.tnz"))
-    shutil.copy2(os.path.join(working_directory, "template", "07-1000_otprj.xml"), os.path.join(working_directory, scene, "{}_otprj.xml".format(scene)))
-    shutil.copy2(os.path.join(working_directory, "template", "project.conf"), os.path.join(working_directory, scene, "project.conf"))
-    shutil.copy2(os.path.join(working_directory, "template", "scenes.xml"), os.path.join(working_directory, scene, "scenes.xml"))
-    shutil.copy2(os.path.join(working_directory, "template", "drawings", "scenes.xml"), os.path.join(working_directory, scene, "drawings", "scenes.xml"))
-    shutil.copy2(os.path.join(working_directory, "template", "extras", "scenes.xml"), os.path.join(working_directory, scene, "extras", "scenes.xml"))
-    shutil.copy2(os.path.join(working_directory, "template", "inputs", "scenes.xml"), os.path.join(working_directory, scene, "inputs", "scenes.xml"))
-    shutil.copy2(os.path.join(working_directory, "template", "scripts", "scenes.xml"), os.path.join(working_directory, scene, "scripts", "scenes.xml"))
+    shutil.copy2(os.path.join(working_directory, "template", "main.tnz"), os.path.join(working_directory, "shots", scene, "main.tnz"))
+    shutil.copy2(os.path.join(working_directory, "template", "07-1000_otprj.xml"), os.path.join(working_directory,"shots", scene, "{}_otprj.xml".format(scene)))
+    shutil.copy2(os.path.join(working_directory, "template", "project.conf"), os.path.join(working_directory, "shots", scene, "project.conf"))
+    shutil.copy2(os.path.join(working_directory, "template", "scenes.xml"), os.path.join(working_directory, "shots", scene, "scenes.xml"))
+    shutil.copy2(os.path.join(working_directory, "template", "drawings", "scenes.xml"), os.path.join(working_directory, "shots", scene, "drawings", "scenes.xml"))
+    shutil.copy2(os.path.join(working_directory, "template", "extras", "scenes.xml"), os.path.join(working_directory, "shots", scene, "extras", "scenes.xml"))
+    shutil.copy2(os.path.join(working_directory, "template", "inputs", "scenes.xml"), os.path.join(working_directory, "shots", scene, "inputs", "scenes.xml"))
+    shutil.copy2(os.path.join(working_directory, "template", "scripts", "scenes.xml"), os.path.join(working_directory, "shots", scene, "scripts", "scenes.xml"))
     
     data = []
     first_frame = bpy.context.scene.frame_start
     last_frame = bpy.context.scene.frame_end
-    with open(os.path.join(working_directory, scene, "main.tnz"), "r") as file:
+    with open(os.path.join(working_directory, "shots", scene, "main.tnz"), "r") as file:
             data = file.readlines()
             for i in data:
                 if re.search("0 59 <level id='1'/>0001 1", i):
@@ -75,10 +75,8 @@ def main(context):
                     data[index] = i
                     break
     
-    with open(os.path.join(working_directory, scene, "main.tnz"), "w") as file:
+    with open(os.path.join(working_directory, "shots", scene, "main.tnz"), "w") as file:
             new_file = file.writelines(data)
-            
-    os.rename(os.path.join(working_directory, scene), os.path.join(working_directory, "shots", scene))
             
     bpy.context.scene.render.image_settings.file_format = format_file
     bpy.context.scene.frame_start = 1
