@@ -42,7 +42,7 @@ def main(context):
     last_frame.sort()
     
     bpy.context.scene.frame_start = first_frame[0]
-    bpy.context.scene.frame_end = last_frame[-1]
+    bpy.context.scene.frame_end = (last_frame[-1] - 1)
     
     bpy.context.scene.render.image_settings.file_format = 'PNG'
     bpy.context.scene.render.filepath = "//shots/{}/extras/file.".format(scene)
