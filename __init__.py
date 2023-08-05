@@ -13,6 +13,13 @@ bl_info = {
     "category": "Import-Export"
 }
 
+def find_next_shot_name(directory):
+    dirs = []
+    for i in os.listdir(directory):
+        if re.match(r'^[0-9]{3}$', i):
+            dirs.append(i)
+    return "{0:03d}".format(int(dirs[-1])+1)
+
 def main(context):
     scene = ""
     working_directory = bpy.path.abspath("//")
@@ -27,11 +34,8 @@ def main(context):
     if not os.path.exists(working_directory + "shots"):
         os.mkdir(os.path.join(working_directory, "shots"))
     
-    dirs = []   
-    for i in os.listdir(working_directory + "shots/"):
-        if re.match(r'^[0-9]{3}0$', i):
-            dirs.append(i)
-    scene = "{0:03d}0".format(len(dirs)+1)
+    #scene = find_next_shot_name(working_directory + "shots/")
+    scene = context.scene.my_tool.new_shot_name
     
     for i in bpy.data.scenes['Scene'].sequence_editor.sequences_all:
         if i.select:
@@ -89,6 +93,19 @@ def main(context):
     elif platform.system() == "Windows":
         subprocess.Popen([r'opentoonz.exe', '{0}shots\\{1}\\main.tnz'.format(working_directory, scene)])
 
+# ------------------------------------------------------------------------
+#    Scene Properties
+# ------------------------------------------------------------------------
+
+class AF_PluginSettings(bpy.types.PropertyGroup):
+
+    new_shot_name: bpy.props.StringProperty(
+        name="New shot name",
+        description=":",
+        default="001",
+        maxlen=1024,
+        )
+
 class ScriptOperator(bpy.types.Operator):
     bl_idname = "object.script_operator"
     bl_label = "Render"
@@ -107,13 +124,18 @@ class Script(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
+        mytool = scene.my_tool
+        layout.prop( mytool, "new_shot_name")
         row = layout.row()
         row.scale_y = 1.5
         row.operator("object.script_operator")
         
-def register():	
+def register():
+  
   bpy.utils.register_class(Script)
   bpy.utils.register_class(ScriptOperator)
+  bpy.utils.register_class(AF_PluginSettings)
+  bpy.types.Scene.my_tool = bpy.props.PointerProperty(type=AF_PluginSettings)
  
 def unregister():	
   bpy.utils.unregister_class(Script)   
