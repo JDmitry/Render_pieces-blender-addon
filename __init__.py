@@ -26,6 +26,9 @@ def main(context):
     data = []
     first_frame = []
     last_frame = []
+    fps = bpy.context.scene.render.fps
+    
+    print(fps)
     
     start = bpy.context.scene.frame_start
     end = bpy.context.scene.frame_end
@@ -72,13 +75,18 @@ def main(context):
     with open(os.path.join(working_directory, "shots", scene, "main.tnz"), "r") as file:
             data = file.readlines()
             for i in data:
+                if re.match("          24", i):
+                    index = data.index(i)
+                    i = i.replace("24", str(fps))
+                    data[index] = i
+                    
                 if re.search("0 59 <level id='1'/>0001 1", i):
                     index = data.index(i)
                     i = i.replace("59", str(last_frame-first_frame))
                     i = i.replace("0001", "{0:04d}".format(first_frame))
                     data[index] = i
                     break
-    
+                
     with open(os.path.join(working_directory, "shots", scene, "main.tnz"), "w") as file:
             new_file = file.writelines(data)
             
@@ -91,11 +99,7 @@ def main(context):
     elif platform.system() == "Darwin":
         subprocess.Popen([r'/Applications/OpenToonz.app/Contents/MacOS/OpenToonz', '{0}shots/{1}/main.tnz'.format(working_directory, scene)])
     elif platform.system() == "Windows":
-        subprocess.Popen([r'opentoonz.exe', '{0}shots\\{1}\\main.tnz'.format(working_directory, scene)])
-
-# ------------------------------------------------------------------------
-#    Scene Properties
-# ------------------------------------------------------------------------
+        subprocess.Popen([r'opentoonz', '{0}shots\\{1}\\main.tnz'.format(working_directory, scene)])
 
 class AF_PluginSettings(bpy.types.PropertyGroup):
 
@@ -131,7 +135,6 @@ class Script(bpy.types.Panel):
         row.operator("object.script_operator")
         
 def register():
-  
   bpy.utils.register_class(Script)
   bpy.utils.register_class(ScriptOperator)
   bpy.utils.register_class(AF_PluginSettings)
