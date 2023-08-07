@@ -29,8 +29,6 @@ def main(context):
     fps = bpy.context.scene.render.fps
     output = bpy.context.scene.render.filepath
     
-    print(fps)
-    
     start = bpy.context.scene.frame_start
     end = bpy.context.scene.frame_end
     format_file = bpy.context.scene.render.image_settings.file_format
