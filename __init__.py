@@ -27,6 +27,7 @@ def main(context):
     first_frame = []
     last_frame = []
     fps = bpy.context.scene.render.fps
+    output = bpy.context.scene.render.filepath
     
     print(fps)
     
@@ -93,6 +94,7 @@ def main(context):
     bpy.context.scene.render.image_settings.file_format = format_file
     bpy.context.scene.frame_start = 1
     bpy.context.scene.frame_end = end
+    bpy.context.scene.render.filepath = output
     
     if platform.system() == "Linux":
         subprocess.Popen([r'opentoonz', '{0}shots/{1}/main.tnz'.format(working_directory, scene)])
