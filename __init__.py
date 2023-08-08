@@ -39,7 +39,7 @@ def main(context):
     #scene = find_next_shot_name(working_directory + "shots/")
     scene = context.scene.my_tool.new_shot_name
     
-    for i in bpy.data.scenes['Scene'].sequence_editor.sequences_all:
+    for i in bpy.data.scenes['Scene'].sequence_editor.sequences:
         if i.select:
             first_frame.append(i.frame_final_start)
             last_frame.append(i.frame_final_end)
