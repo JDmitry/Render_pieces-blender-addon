@@ -28,18 +28,36 @@ def main(context):
     last_frame = []
     fps = bpy.context.scene.render.fps
     output = bpy.context.scene.render.filepath
-    
+   
     start = bpy.context.scene.frame_start
     end = bpy.context.scene.frame_end
     format_file = bpy.context.scene.render.image_settings.file_format
     
     if not os.path.exists(working_directory + "shots"):
         os.mkdir(os.path.join(working_directory, "shots"))
-    
-    #scene = find_next_shot_name(working_directory + "shots/")
-    scene = context.scene.my_tool.new_shot_name
-    
-    for i in bpy.data.scenes['Scene'].sequence_editor.sequences_all:
+        
+    if not os.listdir(os.path.join(working_directory, "shots")):
+        #scene = find_next_shot_name(working_directory + "shots/")
+        scene = context.scene.my_tool.new_shot_name
+    else:
+        dirs = []
+        for i in os.listdir(os.path.join(working_directory, "shots")):
+            if i != ".DS_Store":
+                dirs.append(i)
+        dirs.sort()
+        print(dirs)
+        name = dirs[-1]
+        num = ''
+        ost = ''
+        for i in name:
+            if i.isdigit():
+                num += i
+                continue
+            ost += i
+        # scene = ost + str((int(num) + 1))
+        scene = "{0}{1:03d}".format(ost, (int(num) + 10))
+
+    for i in bpy.data.scenes['Scene'].sequence_editor.sequences:
         if i.select:
             first_frame.append(i.frame_final_start)
             last_frame.append(i.frame_final_end)
@@ -90,7 +108,7 @@ def main(context):
             new_file = file.writelines(data)
             
     bpy.context.scene.render.image_settings.file_format = format_file
-    bpy.context.scene.frame_start = 1
+    bpy.context.scene.frame_start = start
     bpy.context.scene.frame_end = end
     bpy.context.scene.render.filepath = output
     
