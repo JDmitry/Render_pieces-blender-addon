@@ -35,27 +35,6 @@ def main(context):
     
     if not os.path.exists(working_directory + "shots"):
         os.mkdir(os.path.join(working_directory, "shots"))
-        
-    if not os.listdir(os.path.join(working_directory, "shots")):
-        #scene = find_next_shot_name(working_directory + "shots/")
-        scene = context.scene.my_tool.new_shot_name
-    else:
-        dirs = []
-        for i in os.listdir(os.path.join(working_directory, "shots")):
-            if i != ".DS_Store":
-                dirs.append(i)
-        dirs.sort()
-        print(dirs)
-        name = dirs[-1]
-        num = ''
-        ost = ''
-        for i in name:
-            if i.isdigit():
-                num += i
-                continue
-            ost += i
-        # scene = ost + str((int(num) + 1))
-        scene = "{0}{1:03d}".format(ost, (int(num) + 10))
 
     for i in bpy.data.scenes['Scene'].sequence_editor.sequences:
         if i.select:
