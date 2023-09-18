@@ -162,13 +162,6 @@ class AF_PluginSettings(bpy.types.PropertyGroup):
         maxlen=1024,
         )
         
-    path: bpy.props.StringProperty(
-        name="Path",
-        description=":",
-        default="",
-        maxlen=1024,
-        )
-
 class ScriptOperator(bpy.types.Operator):
     bl_idname = "object.script_operator"
     bl_label = "Edit"
@@ -206,13 +199,11 @@ def register():
   bpy.utils.register_class(ScriptOperator)
   bpy.utils.register_class(AF_PluginSettings)
   bpy.types.Scene.my_tool = bpy.props.PointerProperty(type=AF_PluginSettings)
-  bpy.types.Scene.paths = bpy.props.StringProperty(name="Path", subtype='DIR_PATH')
  
 def unregister():	
   bpy.utils.unregister_class(Script)   
   bpy.utils.unregister_class(ScriptOperator)
   bpy.utils.unregister_class(AF_PluginSettings)
-  bpy.types.Scene.my_tool = bpy.props.PointerProperty(type=AF_PluginSettings)
  
 if __name__ == "__main__":
   register()
