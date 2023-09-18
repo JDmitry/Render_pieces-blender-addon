@@ -189,7 +189,6 @@ class Script(bpy.types.Panel):
         scene = context.scene
         mytool = scene.my_tool
         tool = scene.my_tool
-        layout.prop(scene, 'path')
         layout.prop(mytool, "new_shot_name")
         layout.prop(tool, "new_scene_name")
         row = layout.row()
