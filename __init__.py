@@ -5,6 +5,14 @@ import shutil
 import platform
 import subprocess
 
+bl_info = {
+    "name": "Render frames",
+    "author": "dmitry sysoev",
+    "version": (0, 1),
+    "blender": (2, 80, 0),
+    "category": "Import-Export"
+}
+
 shots = ""
 scenes = ""
 
