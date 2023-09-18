@@ -12,7 +12,6 @@ def main(context):
     
     working_directory = ""
     working_directory_shots = ""
-    working_directory_shots_scenes = ""
     data_package = ""
     first_frame = []
     last_frame = []
@@ -132,12 +131,12 @@ def main(context):
     bpy.context.scene.render.filepath = output
     bpy.context.scene.render.fps = fps
 
-#    if platform.system() == "Linux":
-#        subprocess.Popen([r'opentoonz', '{}/main.tnz'.format(os.path.join(working_directory_shots, scenes))])
-#    elif platform.system() == "Darwin":
-#        subprocess.Popen([r'/Applications/OpenToonz.app/Contents/MacOS/OpenToonz', '{}/main.tnz'.format(os.path.join(working_directory_shots, scenes))])
-#    elif platform.system() == "Windows":
-#        subprocess.Popen([r'opentoonz', '{}\\main.tnz'.format(os.path.join(working_directory_shots, scenes))])
+    if platform.system() == "Linux":
+       subprocess.Popen([r'opentoonz', '{}/main.tnz'.format(os.path.join(working_directory_shots, scenes))])
+    elif platform.system() == "Darwin":
+       subprocess.Popen([r'/Applications/OpenToonz.app/Contents/MacOS/OpenToonz', '{}/main.tnz'.format(os.path.join(working_directory_shots, scenes))])
+    elif platform.system() == "Windows":
+       subprocess.Popen([r'opentoonz', '{}\\main.tnz'.format(os.path.join(working_directory_shots, scenes))])
 
 class AF_PluginSettings(bpy.types.PropertyGroup):
 
