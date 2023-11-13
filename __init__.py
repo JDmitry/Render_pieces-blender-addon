@@ -18,6 +18,9 @@ scenes = ""
 
 def main(context):
     
+    templates_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
+    curent_template = "opentoonz"
+    
     working_directory = ""
     working_directory_shots = ""
     data_package = ""
@@ -87,14 +90,14 @@ def main(context):
     os.mkdir("{}/{}/scripts".format(working_directory_shots, scenes))
     os.mkdir("{}/{}/extras".format(working_directory_shots, scenes))
 
-    shutil.copy2(os.path.join(working_directory, "template", "main.tnz"), os.path.join(working_directory_shots, scenes, "main.tnz"))
-    shutil.copy2(os.path.join(working_directory, "template", "07-1000_otprj.xml"), os.path.join(working_directory_shots, scenes, "{}_otprj.xml".format(scenes)))
-    shutil.copy2(os.path.join(working_directory, "template", "project.conf"), os.path.join(working_directory_shots, scenes, "project.conf"))
-    shutil.copy2(os.path.join(working_directory, "template", "scenes.xml"), os.path.join(working_directory_shots, scenes, "scenes.xml"))
-    shutil.copy2(os.path.join(working_directory, "template", "drawings", "scenes.xml"), os.path.join(working_directory_shots, scenes, "drawings", "scenes.xml"))
-    shutil.copy2(os.path.join(working_directory, "template", "extras", "scenes.xml"), os.path.join(working_directory_shots, scenes, "extras", "scenes.xml"))
-    shutil.copy2(os.path.join(working_directory, "template", "inputs", "scenes.xml"), os.path.join(working_directory_shots, scenes, "inputs", "scenes.xml"))
-    shutil.copy2(os.path.join(working_directory, "template", "scripts", "scenes.xml"), os.path.join(working_directory_shots, scenes, "scripts", "scenes.xml"))
+    shutil.copy2(os.path.join(templates_directory, curent_template, "main.tnz"), os.path.join(working_directory_shots, scenes, "main.tnz"))
+    shutil.copy2(os.path.join(templates_directory, curent_template, "template_otprj.xml"), os.path.join(working_directory_shots, scenes, "{}_otprj.xml".format(scenes)))
+    shutil.copy2(os.path.join(templates_directory, curent_template, "project.conf"), os.path.join(working_directory_shots, scenes, "project.conf"))
+    shutil.copy2(os.path.join(templates_directory, curent_template, "scenes.xml"), os.path.join(working_directory_shots, scenes, "scenes.xml"))
+    shutil.copy2(os.path.join(templates_directory, curent_template, "drawings", "scenes.xml"), os.path.join(working_directory_shots, scenes, "drawings", "scenes.xml"))
+    shutil.copy2(os.path.join(templates_directory, curent_template, "extras", "scenes.xml"), os.path.join(working_directory_shots, scenes, "extras", "scenes.xml"))
+    shutil.copy2(os.path.join(templates_directory, curent_template, "inputs", "scenes.xml"), os.path.join(working_directory_shots, scenes, "inputs", "scenes.xml"))
+    shutil.copy2(os.path.join(templates_directory, curent_template, "scripts", "scenes.xml"), os.path.join(working_directory_shots, scenes, "scripts", "scenes.xml"))
 
     for i in bpy.data.scenes['Scene'].sequence_editor.sequences:
         if i.select:
